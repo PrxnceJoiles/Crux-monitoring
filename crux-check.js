@@ -65,12 +65,16 @@ async function main() {
   if (inp > THRESHOLDS.INP) breaches.push(`INP: ${inp}ms (threshold: 200ms)`);
   if (cls > THRESHOLDS.CLS) breaches.push(`CLS: ${cls} (threshold: 0.1)`);
 
+  const allMetrics = `*Current p75 Metrics:*\n• LCP : ${lcp}s\n• INP : ${inp}ms\n• CLS : ${cls}`;
+
   if (breaches.length > 0) {
-    const message = `:warning: *GHD Hair CrUX Alert*\nThe following Core Web Vitals metrics have breached their thresholds:\n${breaches.map(b => `• ${b}`).join('\n')}\n\n*Metric Definitions:*\n• LCP (Largest Contentful Paint): measures loading performance. Good if under 2.5s\n• INP (Interaction to Next Paint): measures interactivity. Good if under 200ms\n• CLS (Cumulative Layout Shift): measures visual stability. Good if under 0.1`;
+    const message = `:warning: *GHD Hair CrUX Alert*\nThe following Core Web Vitals metrics have breached their thresholds:\n${breaches.map(b => `• ${b}`).join('\n')}\n\n${allMetrics}\n\n*Metric Definitions:*\n• LCP (Largest Contentful Paint): measures loading performance. Good if under 2.5s\n• INP (Interaction to Next Paint): measures interactivity. Good if under 200ms\n• CLS (Cumulative Layout Shift): measures visual stability. Good if under 0.1`;
     await sendSlackAlert(message);
     console.log('Alert sent to Slack.');
   } else {
-    console.log('All metrics within thresholds. No alert needed.');
+    const message = `:white_check_mark: *GHD Hair CrUX Weekly Report*\nAll Core Web Vitals metrics are within thresholds.\n\n${allMetrics}\n\n*Metric Definitions:*\n• LCP (Largest Contentful Paint): measures loading performance. Good if under 2.5s\n• INP (Interaction to Next Paint): measures interactivity. Good if under 200ms\n• CLS (Cumulative Layout Shift): measures visual stability. Good if under 0.1`;
+    await sendSlackAlert(message);
+    console.log('All metrics within thresholds. Report sent to Slack.');
   }
 }
 
